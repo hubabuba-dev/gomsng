@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log"
 	"msng/internal/repository"
 
 	"github.com/google/uuid"
@@ -23,7 +24,7 @@ func NewChatRepository(repo *repository.ChatRepository) *ChatService {
 	}
 }
 
-func (s *ChatService) GetUserChats(ctx context.Context, chats Chats) (*[]Chats, error) {
+func (s *ChatService) GetUserChats(ctx context.Context, chats Chats) (*[]repository.Chat, error) {
 	if chats.ChatType != nil {
 		if *chats.ChatType != "group" && *chats.ChatType != "dm" {
 			return nil, ErrWrongChatType
@@ -35,7 +36,23 @@ func (s *ChatService) GetUserChats(ctx context.Context, chats Chats) (*[]Chats, 
 		ChatType: chats.ChatType,
 	}
 
-	s.chat_repo.GetAllChatList(chats.UserID, filter)
+	chat_list, err := s.chat_repo.GetAllChatList(ctx, chats.UserID, filter)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	return chat_list, nil
+}
+
+func (s *ChatService) OpenUserChat(ctx context.Context, guid uuid.UUID, user_id uuid.UUID) {
+	chat, err := s.chat_repo.OpenChat(ctx, guid, user_id)
+	if err != nil {
+		//return nil, err
+	}
+	log.Println(chat)
+	//return chat, err
+}
+
+func (s *ChatService) GetMessages(ctx context.Context) {
+
 }

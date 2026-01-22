@@ -156,7 +156,7 @@ func (s *AuthService) RefreshUserToken(ctx context.Context, refresh_token string
 
 	refresh, _, err = s.createRefreshToken(ctx, tx, user.UUID, user.ID)
 	if err != nil {
-		log.Println("Errr")
+		log.Println("")
 		return "", "", err
 	}
 
@@ -180,7 +180,7 @@ func (s *AuthService) VerifyAccessToken(access_token string) (userID uuid.UUID, 
 
 func (s *AuthService) LogoutUser(ctx context.Context, refresh_token string) error {
 
-	log.Println("start jopa")
+	log.Println("")
 	tx, err := s.token.BeginTransaction(ctx)
 	if err != nil {
 		return err

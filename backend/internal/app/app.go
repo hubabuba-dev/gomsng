@@ -67,13 +67,17 @@ func InitAppHandlers(appServices *AppServices) *AppHandlers {
 	}
 }
 
-func InitAppRouters(mux *http.ServeMux, appHandlers *AppHandlers) {
+func InitPublicRouters(mux *http.ServeMux, appHandlers *AppHandlers) {
 
 	mux.HandleFunc("/auth/register", appHandlers.UserHandler.RegisterUser)
 	mux.HandleFunc("/auth/login", appHandlers.UserHandler.LoginUser)
 	mux.HandleFunc("/auth/refresh", appHandlers.UserHandler.RefreshUserToken)
 	mux.HandleFunc("/auth/logout", appHandlers.UserHandler.LogoutUser)
 }
+
+//func InitPrivateRouters(mux *http.ServeMux, appHandlers *AppHandlers) {
+//	mux.HandleFunc("/chat", appHandlers.ChatHandler)
+//}
 
 func InitAppMiddlewares(mux *http.ServeMux) *http.Handler {
 	loggingMux := middleware.LoggingMiddleware(mux)
@@ -99,7 +103,7 @@ func AppInit(cfg *config.Config, ctx context.Context) (*http.Handler, *pgxpool.P
 
 	mux := http.NewServeMux()
 
-	InitAppRouters(mux, handlers)
+	InitPublicRouters(mux, handlers)
 
 	handler := InitAppMiddlewares(mux)
 
